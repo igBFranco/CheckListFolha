@@ -2,9 +2,13 @@ package br.pucpr.appdev20241.checklistfolha.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import br.pucpr.appdev20241.checklistfolha.databinding.AdapterItemsBinding
+import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.model.ToDo
+import kotlinx.coroutines.launch
 
 class ItemsAdapter (var todoItems: MutableList<ToDo>): RecyclerView.Adapter<ItemsAdapter.ItemHolder> ()
 {
@@ -15,19 +19,25 @@ class ItemsAdapter (var todoItems: MutableList<ToDo>): RecyclerView.Adapter<Item
     }
 
     override fun onBindViewHolder(holder: ItemsAdapter.ItemHolder, position: Int) {
-        todoItems[position].run {
-            holder.binding.itemName.text = this.itemName
-            holder.binding.itemStatus.isChecked = this.itemStatus
+        val currentItem = todoItems[position]
+        holder.binding.itemName.text = currentItem.itemName
+        holder.binding.itemStatus.isChecked = currentItem.itemStatus
 
             holder.binding.itemStatus.setOnCheckedChangeListener { _, isChecked ->
-                this.itemStatus = isChecked
+                currentItem.itemStatus = isChecked
+                holder.itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+                    saveUpdatedToDoItem(position, currentItem)
+                }
             }
-        }
     }
 
     fun updateData(newItems: MutableList<ToDo>) {
         todoItems = newItems
         notifyDataSetChanged()
+    }
+
+    private suspend fun saveUpdatedToDoItem(position: Int, updatedToDo: ToDo) {
+        DataStore.editToDoItem(position, updatedToDo)
     }
 
     override fun getItemCount(): Int = todoItems.size
