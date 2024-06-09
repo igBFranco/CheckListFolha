@@ -53,8 +53,10 @@ object DataStore {
         db.quadroDao().insert(quadro)
     }
 
-    suspend fun updateQuadroItem(quadro: Quadro) = withContext(Dispatchers.IO) {
-        db.quadroDao().update(quadro)
+    suspend fun editQuadroItem(position: Int, quadro: Quadro) {
+        withContext(Dispatchers.IO) {
+            db.quadroDao().update(quadro)
+        }
     }
 
     suspend fun deleteQuadroItem(quadro: Quadro) = withContext(Dispatchers.IO) {

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.pucpr.appdev20241.checklistfolha.databinding.AdapterQuadrosBinding
 import br.pucpr.appdev20241.checklistfolha.model.Quadro
+import br.pucpr.appdev20241.checklistfolha.model.ToDo
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -23,6 +24,11 @@ class QuadrosAdapter (var quadrosEntregues: MutableList<Quadro>): RecyclerView.A
             holder.binding.dataEntrega.text = dateFormat.format(this.dataEntrega)
 
         }
+    }
+
+    fun updateData(newItems: MutableList<Quadro>) {
+        quadrosEntregues = newItems
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = quadrosEntregues.size

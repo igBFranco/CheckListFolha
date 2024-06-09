@@ -19,7 +19,9 @@ import br.pucpr.appdev20241.checklistfolha.R
 import br.pucpr.appdev20241.checklistfolha.databinding.FragmentControleQuadrosBinding
 import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.model.Quadro
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class ControleQuadros : Fragment() {
@@ -31,6 +33,7 @@ class ControleQuadros : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentControleQuadrosBinding.inflate(layoutInflater)
+        configureRecycleViewEvent()
         configureGesture()
     }
 
@@ -73,19 +76,22 @@ class ControleQuadros : Fragment() {
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     DataStore.addQuadroItem(Quadro(quadroLocal = text, dataEntrega = calendar.time))
-                    adapter.notifyDataSetChanged()
-                    Toast.makeText(requireContext(), "Quadro de Frequência entregue com sucesso!", Toast.LENGTH_LONG).show()
-                    alertDialog.dismiss()
+                    val updatedList = DataStore.getAllQuadros().toMutableList()
+                    withContext(Dispatchers.Main) {
+                        adapter.updateData(updatedList)
+                        Toast.makeText(requireContext(), "Quadro de Frequência entregue com sucesso!", Toast.LENGTH_LONG).show()
+                        alertDialog.dismiss()
+                    }
                 }
             }
         }
     }
 
     private suspend fun loadRecyclerView() {
+        val quadros = DataStore.getAllQuadros().toMutableList()
         LinearLayoutManager(requireContext()).run {
             this.orientation = LinearLayoutManager.VERTICAL
             binding.rcvQuadros.layoutManager = this
-            val quadros = DataStore.getAllQuadros().toMutableList()
             adapter = QuadrosAdapter(quadros)
             binding.rcvQuadros.adapter = adapter
         }
@@ -114,10 +120,11 @@ class ControleQuadros : Fragment() {
                                     setPositiveButton("Excluir") { _, _ ->
                                         viewLifecycleOwner.lifecycleScope.launch {
                                             DataStore.deleteQuadroItemByPosition(this@apply)
-                                            if (quadroFreq != null) {
-                                                Toast.makeText(requireContext(), "Quadro ${quadroFreq.quadroLocal} removido com sucesso!", Toast.LENGTH_LONG).show()
+                                            val updatedList = DataStore.getAllQuadros().toMutableList()
+                                            withContext(Dispatchers.Main) {
+                                                adapter.updateData(updatedList)
+                                                Toast.makeText(requireContext(), "Quadro ${quadroFreq?.quadroLocal} removido com sucesso!", Toast.LENGTH_LONG).show()
                                             }
-                                            adapter.notifyDataSetChanged()
                                         }
                                     }
                                 }.show()
@@ -144,16 +151,20 @@ class ControleQuadros : Fragment() {
                 setView(dialogView)
                 setTitle("Editar Entrega de Quadro")
                 setPositiveButton("Salvar") { _, _ ->
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        quadroItem?.quadroLocal = editText.text.toString()
-                        val year = datePicker.year
-                        val month = datePicker.month
-                        val day = datePicker.dayOfMonth
-                        calendar.set(year, month, day)
-                        quadroItem?.dataEntrega = calendar.time
-                        DataStore.updateQuadroItem(quadroItem!!)
-                        adapter.notifyItemChanged(position)
-                        Toast.makeText(requireContext(), "Quadro editado com sucesso!", Toast.LENGTH_LONG).show()
+                    val updatedText = editText.text.toString()
+                    quadroItem?.quadroLocal = updatedText
+                    val year = datePicker.year
+                    val month = datePicker.month
+                    val day = datePicker.dayOfMonth
+                    calendar.set(year, month, day)
+                    quadroItem?.dataEntrega = calendar.time
+                    if (quadroItem != null) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            DataStore.editQuadroItem(position, quadroItem)
+                            val updatedList = DataStore.getAllQuadros().toMutableList()
+                            adapter.updateData(updatedList)
+                            Toast.makeText(requireContext(), "Quadro editado com sucesso!", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
                 setNegativeButton("Cancelar", null)
