@@ -6,6 +6,7 @@ import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import br.pucpr.appdev20241.checklistfolha.R
 import br.pucpr.appdev20241.checklistfolha.databinding.ActivityMainBinding
+import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.view.CheckList
 import br.pucpr.appdev20241.checklistfolha.view.ControleQuadros
 import br.pucpr.appdev20241.checklistfolha.view.Fechamento
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DataStore.init(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -1,9 +1,14 @@
 package br.pucpr.appdev20241.checklistfolha.model
 
-class ToDo (
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "ToDo")
+data class ToDo (
+     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var itemName: String,
     var itemStatus: Boolean
 ) {
-    constructor(): this("", false)
-    constructor(itemName: String): this(itemName, false)
+//    constructor(): this(0,"", false)
+//    constructor(itemName: String): this(0,itemName, false)
 }

@@ -17,6 +17,8 @@ import br.pucpr.appdev20241.checklistfolha.R
 import br.pucpr.appdev20241.checklistfolha.databinding.FragmentCheckListBinding
 import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.model.ToDo
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class CheckList : Fragment() {
     private var _binding: FragmentCheckListBinding? = null
@@ -29,25 +31,24 @@ class CheckList : Fragment() {
         super.onCreate(savedInstanceState)
 
         binding = FragmentCheckListBinding.inflate(layoutInflater)
-
-        loadRecyclerView()
         configureRecycleViewEvent()
-        addItemConfig()
         configureGesture()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCheckListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadRecyclerView()
-        addItemConfig()
+        viewLifecycleOwner.lifecycleScope.launch {
+            loadRecyclerView()
+            addItemConfig()
+        }
     }
 
     private fun addItemConfig() {
@@ -63,20 +64,25 @@ class CheckList : Fragment() {
             val editText = dialogView.findViewById<EditText>(R.id.editText)
             dialogView.findViewById<Button>(R.id.btnAddItem).setOnClickListener {
                 val text = editText.text.toString()
-                DataStore.addItem(ToDo(text))
-                adapter.notifyDataSetChanged()
-                Toast.makeText(requireContext(), "Item adicionado com sucesso!", Toast.LENGTH_LONG).show()
-                alertDialog.dismiss()
-
+                viewLifecycleOwner.lifecycleScope.launch {
+                    DataStore.addToDoItem(ToDo(itemName = text, itemStatus = false))
+                    adapter.notifyDataSetChanged()
+                    Toast.makeText(
+                        requireContext(),
+                        "Item adicionado com sucesso!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    alertDialog.dismiss()
+                }
             }
         }
     }
 
-    private fun loadRecyclerView() {
+    private suspend fun loadRecyclerView() {
         LinearLayoutManager(requireContext()).run {
             this.orientation = LinearLayoutManager.VERTICAL
             binding.rcvItems.layoutManager = this
-            adapter = ItemsAdapter(DataStore.todoItems)
+            adapter = ItemsAdapter(DataStore.getAllToDos().toMutableList())
             binding.rcvItems.adapter = adapter
         }
     }
@@ -96,16 +102,24 @@ class CheckList : Fragment() {
                 binding.rcvItems.findChildViewUnder(e.x, e.y).run {
                     this?.let { view ->
                         binding.rcvItems.getChildAdapterPosition(view).apply {
-                            val todoItem = DataStore.getItem(this)
-                            AlertDialog.Builder(requireContext()).run {
-                                setMessage("Tem certeza que deseja remover este Item?")
-                                setNegativeButton("Cancelar") {_,_ ->}
-                                setPositiveButton("Excluir") { _,_ ->
-                                    DataStore.removeItem(this@apply)
-                                    Toast.makeText(requireContext(), "Item ${todoItem.itemName} removido com sucesso!", Toast.LENGTH_LONG).show()
-                                    adapter.notifyDataSetChanged()
-                                }
-                            }.show()
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                val todoItem = DataStore.getToDoItem(this@apply)
+                                AlertDialog.Builder(requireContext()).run {
+                                    setMessage("Tem certeza que deseja remover este Item?")
+                                    setNegativeButton("Cancelar") { _, _ -> }
+                                    setPositiveButton("Excluir") { _, _ ->
+                                        viewLifecycleOwner.lifecycleScope.launch {
+                                            DataStore.deleteToDoItemByPosition(this@apply)
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Item ${todoItem?.itemName} removido com sucesso!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                            adapter.notifyDataSetChanged()
+                                        }
+                                    }
+                                }.show()
+                            }
                         }
                     }
                 }
@@ -114,22 +128,26 @@ class CheckList : Fragment() {
     }
 
     private fun showEditDialog(position: Int) {
-        val todoItem = DataStore.getItem(position)
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.adapter_edit_form, null)
-        val editText = dialogView.findViewById<EditText>(R.id.editText).apply {
-            setText(todoItem.itemName)
-        }
-
-        AlertDialog.Builder(requireContext()).run {
-            setView(dialogView)
-            setTitle("Editar Item")
-            setPositiveButton("Salvar") { _, _ ->
-                todoItem.itemName = editText.text.toString()
-                adapter.notifyItemChanged(position)
-                Toast.makeText(requireContext(), "Item editado com sucesso!", Toast.LENGTH_LONG).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            val todoItem = DataStore.getToDoItem(position)
+            val dialogView =
+                LayoutInflater.from(requireContext()).inflate(R.layout.adapter_edit_form, null)
+            val editText = dialogView.findViewById<EditText>(R.id.editText).apply {
+                setText(todoItem?.itemName)
             }
-            setNegativeButton("Cancelar", null)
-        }.show()
+
+            AlertDialog.Builder(requireContext()).run {
+                setView(dialogView)
+                setTitle("Editar Item")
+                setPositiveButton("Salvar") { _, _ ->
+                    todoItem?.itemName = editText.text.toString()
+                    adapter.notifyItemChanged(position)
+                    Toast.makeText(requireContext(), "Item editado com sucesso!", Toast.LENGTH_LONG)
+                        .show()
+                }
+                setNegativeButton("Cancelar", null)
+            }.show()
+        }
     }
 
     private fun configureRecycleViewEvent() {
