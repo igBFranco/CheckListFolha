@@ -135,14 +135,27 @@ class CheckList : Fragment() {
     private fun configureRecycleViewEvent() {
         binding.rcvItems.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                rv.findChildViewUnder(e.x, e.y). run {
-                    return (this != null && gesture.onTouchEvent(e))
+                val child = rv.findChildViewUnder(e.x, e.y)
+                if (child != null) {
+                    val checkbox = child.findViewById<View>(R.id.itemStatus)
+                    if (checkbox != null && e.action == MotionEvent.ACTION_DOWN && isPointInsideView(e.rawX, e.rawY, checkbox)) {
+                        return false
+                    }
                 }
+                return gesture.onTouchEvent(e)
             }
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 
         })
+    }
+
+    private fun isPointInsideView(x: Float, y: Float, view: View): Boolean {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val viewX = location[0]
+        val viewY = location[1]
+        return x >= viewX && x <= viewX + view.width && y >= viewY && y <= viewY + view.height
     }
 
     override fun onDestroyView() {
