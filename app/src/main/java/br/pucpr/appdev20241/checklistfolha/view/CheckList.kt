@@ -1,6 +1,7 @@
 package br.pucpr.appdev20241.checklistfolha.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,25 +12,25 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.pucpr.appdev20241.checklistfolha.R
 import br.pucpr.appdev20241.checklistfolha.databinding.FragmentCheckListBinding
 import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.model.ToDo
-import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CheckList : Fragment() {
     private var _binding: FragmentCheckListBinding? = null
-    //private val binding get() = _binding!!
     private lateinit var binding: FragmentCheckListBinding
     private lateinit var adapter: ItemsAdapter
     private lateinit var gesture: GestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = FragmentCheckListBinding.inflate(layoutInflater)
         configureRecycleViewEvent()
         configureGesture()
@@ -66,29 +67,29 @@ class CheckList : Fragment() {
                 val text = editText.text.toString()
                 viewLifecycleOwner.lifecycleScope.launch {
                     DataStore.addToDoItem(ToDo(itemName = text, itemStatus = false))
-                    adapter.notifyDataSetChanged()
-                    Toast.makeText(
-                        requireContext(),
-                        "Item adicionado com sucesso!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    alertDialog.dismiss()
+                    val updatedList = DataStore.getAllToDos().toMutableList()
+                    withContext(Dispatchers.Main) {
+                        adapter.updateData(updatedList)
+                        Toast.makeText(requireContext(), "Item adicionado com sucesso!", Toast.LENGTH_LONG).show()
+                        alertDialog.dismiss()
+                    }
                 }
             }
         }
     }
 
     private suspend fun loadRecyclerView() {
+        val todos = DataStore.getAllToDos().toMutableList()
         LinearLayoutManager(requireContext()).run {
             this.orientation = LinearLayoutManager.VERTICAL
             binding.rcvItems.layoutManager = this
-            adapter = ItemsAdapter(DataStore.getAllToDos().toMutableList())
+            adapter = ItemsAdapter(todos)
             binding.rcvItems.adapter = adapter
         }
     }
 
     private fun configureGesture() {
-        gesture = GestureDetector(requireContext(), object: GestureDetector.SimpleOnGestureListener(){
+        gesture = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 binding.rcvItems.findChildViewUnder(e.x, e.y)?.let { view ->
                     val position = binding.rcvItems.getChildAdapterPosition(view)
@@ -110,12 +111,11 @@ class CheckList : Fragment() {
                                     setPositiveButton("Excluir") { _, _ ->
                                         viewLifecycleOwner.lifecycleScope.launch {
                                             DataStore.deleteToDoItemByPosition(this@apply)
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Item ${todoItem?.itemName} removido com sucesso!",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                            adapter.notifyDataSetChanged()
+                                            val updatedList = DataStore.getAllToDos().toMutableList()
+                                            withContext(Dispatchers.Main) {
+                                                adapter.updateData(updatedList)
+                                                Toast.makeText(requireContext(), "Item ${todoItem?.itemName} removido com sucesso!", Toast.LENGTH_LONG).show()
+                                            }
                                         }
                                     }
                                 }.show()
@@ -130,8 +130,8 @@ class CheckList : Fragment() {
     private fun showEditDialog(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
             val todoItem = DataStore.getToDoItem(position)
-            val dialogView =
-                LayoutInflater.from(requireContext()).inflate(R.layout.adapter_edit_form, null)
+            Log.d("CheckList", "Retrieved item: $todoItem")
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.adapter_edit_form, null)
             val editText = dialogView.findViewById<EditText>(R.id.editText).apply {
                 setText(todoItem?.itemName)
             }
@@ -140,10 +140,18 @@ class CheckList : Fragment() {
                 setView(dialogView)
                 setTitle("Editar Item")
                 setPositiveButton("Salvar") { _, _ ->
-                    todoItem?.itemName = editText.text.toString()
-                    adapter.notifyItemChanged(position)
-                    Toast.makeText(requireContext(), "Item editado com sucesso!", Toast.LENGTH_LONG)
-                        .show()
+                    val updatedText = editText.text.toString()
+                    todoItem?.itemName = updatedText
+                    if (todoItem != null) {
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            DataStore.editToDoItem(position, todoItem)
+                            val updatedList = DataStore.getAllToDos().toMutableList()
+                            withContext(Dispatchers.Main) {
+                                adapter.updateData(updatedList)
+                                Toast.makeText(requireContext(), "Item editado com sucesso!", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
                 }
                 setNegativeButton("Cancelar", null)
             }.show()
@@ -162,6 +170,7 @@ class CheckList : Fragment() {
                 }
                 return gesture.onTouchEvent(e)
             }
+
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 

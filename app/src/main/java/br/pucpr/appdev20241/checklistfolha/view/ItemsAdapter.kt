@@ -25,6 +25,11 @@ class ItemsAdapter (var todoItems: MutableList<ToDo>): RecyclerView.Adapter<Item
         }
     }
 
+    fun updateData(newItems: MutableList<ToDo>) {
+        todoItems = newItems
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int = todoItems.size
 
     inner class ItemHolder(val binding: AdapterItemsBinding): RecyclerView.ViewHolder(binding.root)

@@ -24,8 +24,10 @@ object DataStore {
         db.toDoDao().insert(toDo)
     }
 
-    suspend fun updateToDoItem(toDo: ToDo) = withContext(Dispatchers.IO) {
-        db.toDoDao().update(toDo)
+    suspend fun editToDoItem(position: Int, toDo: ToDo) {
+        withContext(Dispatchers.IO) {
+            db.toDoDao().update(toDo)
+        }
     }
 
     suspend fun deleteToDoItem(toDo: ToDo) = withContext(Dispatchers.IO) {
