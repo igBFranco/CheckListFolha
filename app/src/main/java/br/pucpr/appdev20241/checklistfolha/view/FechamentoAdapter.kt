@@ -32,5 +32,6 @@ class FechamentoAdapter(private val items: List<Any>) : RecyclerView.Adapter<Fec
         }
     }
 
+
     override fun getItemCount() = items.size
 }

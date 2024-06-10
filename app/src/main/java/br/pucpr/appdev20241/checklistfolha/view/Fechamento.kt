@@ -33,6 +33,7 @@ class Fechamento : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateCounts()
 
         binding.buttonSave.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -59,6 +60,22 @@ class Fechamento : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = FechamentoAdapter(items)
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun updateCounts() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val todos = DataStore.getAllToDos()
+            val quadros = DataStore.getAllQuadros()
+
+            val totalTodos = todos.size
+            val totalQuadros = quadros.size
+
+            val totalTodosConcluidos = todos.count { it.itemStatus }
+            val totalQuadrosEntregues = quadros.count { true }
+
+            binding.itensOk.text = "$totalTodosConcluidos/$totalTodos"
+            binding.quadrosOk.text = "$totalQuadrosEntregues/$totalQuadros"
+        }
     }
 
     private fun getCurrentCompetencia(): String {

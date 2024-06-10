@@ -8,6 +8,14 @@
     android:gravity="center_horizontal"
     >
 
+    <Button
+        android:id="@+id/archive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arquivados"
+        android:layout_margin="16dp"
+        android:layout_gravity="right"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,14 +34,15 @@
        <TextView
            android:layout_width="wrap_content"
            android:layout_height="match_parent"
-           android:text="Items OK:"
+           android:text="Itens OK:"
            android:textSize="16dp"
            android:paddingRight="1dp"/>
        <TextView
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:text="2/3"
-           android:textSize="16dp"/>
+           android:text="0/0"
+           android:textSize="16dp"
+           android:id="@+id/itensOk"/>
    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,8 +58,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="2/2"
-            android:textSize="16dp"/>
+            android:text="0/0"
+            android:textSize="16dp"
+            android:id="@+id/quadrosOk"/>
     </LinearLayout>
 
     <Button
@@ -58,7 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Finalizar"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/secondaryColor"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
