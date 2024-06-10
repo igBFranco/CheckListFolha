@@ -19,4 +19,7 @@ interface QuadroDao {
 
     @Delete
     fun delete(quadro: Quadro)
+
+    @Query("DELETE FROM Quadro")
+    suspend fun deleteAll(): Int
 }

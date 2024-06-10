@@ -5,50 +5,71 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import br.pucpr.appdev20241.checklistfolha.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import br.pucpr.appdev20241.checklistfolha.databinding.FragmentCheckListBinding
+import br.pucpr.appdev20241.checklistfolha.databinding.FragmentControleQuadrosBinding
+import br.pucpr.appdev20241.checklistfolha.databinding.FragmentFechamentoBinding
+import br.pucpr.appdev20241.checklistfolha.model.DataStore
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class Fechamento : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentFechamentoBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: FechamentoAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_fechamento, container, false)
+        _binding = FragmentFechamentoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Fechamento.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Fechamento().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.buttonSave.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val areAllCompleted = DataStore.areAllItemsCompleted()
+                if (areAllCompleted) {
+                    val todos = DataStore.getAllToDos()
+                    val quadros = DataStore.getAllQuadros()
+                    val allItems = todos + quadros
+                    displayItems(allItems)
+
+                    val competencia = getCurrentCompetencia()
+                    DataStore.saveFechamento(competencia)
+
+                    DataStore.clearData()
+                    Toast.makeText(requireContext(), "Dados salvos com sucesso.", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(requireContext(), "Todos os itens devem estar concluídos para salvar.", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun displayItems(items: List<Any>) {
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = FechamentoAdapter(items)
+        binding.recyclerView.adapter = adapter
+    }
+
+    private fun getCurrentCompetencia(): String {
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH) + 1 // January is 0
+        val year = calendar.get(Calendar.YEAR)
+        return String.format("%02d/%d", month, year)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -1,6 +1,7 @@
 package br.pucpr.appdev20241.checklistfolha.model
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 object DataStore {
@@ -58,5 +59,32 @@ object DataStore {
         if (position in quadros.indices) {
             deleteQuadroItem(quadros[position])
         }
+    }
+    suspend fun areAllItemsCompleted(): Boolean = withContext(Dispatchers.IO) {
+        val todos = db.toDoDao().getAll()
+        todos.all { it.itemStatus }
+    }
+
+    suspend fun saveFechamento(competencia: String) = withContext(Dispatchers.IO) {
+        val todos = getAllToDos()
+        val quadros = getAllQuadros()
+        val fechamento = Fechamento(
+            competencia = competencia,
+            todos = todos,
+            quadros = quadros
+        )
+        db.fechamentoDao().insert(fechamento)
+        clearData()
+    }
+
+    suspend fun getFechamentoByCompetencia(competencia: String): Fechamento? = withContext(Dispatchers.IO) {
+        db.fechamentoDao().getByCompetencia(competencia)
+    }
+
+    suspend fun clearData() = withContext(Dispatchers.IO) {
+        val deletedToDos = db.toDoDao().deleteAll()
+        val deletedQuadros = db.quadroDao().deleteAll()
+        Log.d("DataStore", "Deleted $deletedToDos ToDos and $deletedQuadros Quadros")
+
     }
 }

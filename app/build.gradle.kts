@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "br.pucpr.appdev20241.checklistfolha"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "br.pucpr.appdev20241.checklistfolha"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -40,8 +40,10 @@ android {
 }
 
 dependencies {
-    val room_version = "2.4.3"
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.0")
+    val room_version = "2.6.0"
     implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
@@ -57,4 +59,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation ("com.google.code.gson:gson:2.8.5")
+
 }

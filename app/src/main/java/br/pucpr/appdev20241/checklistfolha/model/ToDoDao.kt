@@ -19,4 +19,7 @@ interface ToDoDao {
 
     @Delete
     fun delete(toDo: ToDo)
+
+    @Query("DELETE FROM ToDo")
+    suspend fun deleteAll(): Int
 }
