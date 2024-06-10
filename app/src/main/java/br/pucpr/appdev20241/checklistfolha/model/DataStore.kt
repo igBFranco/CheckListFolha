@@ -77,6 +77,10 @@ object DataStore {
         clearData()
     }
 
+    suspend fun getAllFechamentos(): List<Fechamento> {
+        return db.fechamentoDao().getAllFechamentos()
+    }
+
     suspend fun getFechamentoByCompetencia(competencia: String): Fechamento? = withContext(Dispatchers.IO) {
         db.fechamentoDao().getByCompetencia(competencia)
     }

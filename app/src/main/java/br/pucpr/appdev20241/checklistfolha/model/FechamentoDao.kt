@@ -8,6 +8,9 @@ interface FechamentoDao {
     @Insert
     suspend fun insert(fechamento: Fechamento)
 
+    @Query("SELECT * FROM Fechamento")
+    suspend fun getAllFechamentos(): List<Fechamento>
+
     @Query("SELECT * FROM Fechamento WHERE competencia = :competencia")
     suspend fun getByCompetencia(competencia: String): Fechamento?
 

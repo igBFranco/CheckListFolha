@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.pucpr.appdev20241.checklistfolha.databinding.AdapterQuadrosBinding
 import br.pucpr.appdev20241.checklistfolha.model.Quadro
-import br.pucpr.appdev20241.checklistfolha.model.ToDo
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class QuadrosAdapter (var quadrosEntregues: MutableList<Quadro>): RecyclerView.Adapter<QuadrosAdapter.QuadroHolder> (){
+class QuadrosAdapter(var quadrosEntregues: List<Quadro>): RecyclerView.Adapter<QuadrosAdapter.QuadroHolder> (){
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuadrosAdapter.QuadroHolder {

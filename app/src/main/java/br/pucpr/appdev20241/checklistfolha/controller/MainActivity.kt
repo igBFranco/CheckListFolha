@@ -10,6 +10,7 @@ import br.pucpr.appdev20241.checklistfolha.model.DataStore
 import br.pucpr.appdev20241.checklistfolha.view.CheckList
 import br.pucpr.appdev20241.checklistfolha.view.ControleQuadros
 import br.pucpr.appdev20241.checklistfolha.view.Fechamento
+import br.pucpr.appdev20241.checklistfolha.view.FechamentosArquivados
 import br.pucpr.appdev20241.checklistfolha.view.ItemsAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +45,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_fechamento -> {
                     loadFragment(Fechamento())
+                    true
+                }
+                R.id.nav_arquivo -> {
+                    loadFragment(FechamentosArquivados())
                     true
                 }
                 else -> false
