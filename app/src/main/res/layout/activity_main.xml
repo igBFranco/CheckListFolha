@@ -51,6 +51,6 @@
         app:menu="@menu/bottom_navigation_menu"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
-        android:background="@color/primaryColor"/>
-
+        android:background="@color/primaryColor"
+        app:itemActiveIndicatorStyle="@style/Theme.BottomNavigationView.ActiveIndicator"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

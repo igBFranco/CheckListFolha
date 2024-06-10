@@ -19,6 +19,7 @@
         android:id="@+id/btnAddItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Adicionar Item" />
+        android:text="Adicionar Item"
+        android:backgroundTint="@color/secondaryColor"/>
 
 </LinearLayout>

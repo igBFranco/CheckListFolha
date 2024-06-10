@@ -147,7 +147,7 @@ class ControleQuadros : Fragment() {
             val calendar = Calendar.getInstance().apply { time = quadroItem?.dataEntrega }
             datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
-            AlertDialog.Builder(requireContext()).run {
+            val alertDialog = AlertDialog.Builder(requireContext()).run {
                 setView(dialogView)
                 setTitle("Editar Entrega de Quadro")
                 setPositiveButton("Salvar") { _, _ ->
@@ -169,6 +169,8 @@ class ControleQuadros : Fragment() {
                 }
                 setNegativeButton("Cancelar", null)
             }.show()
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(resources.getColor(R.color.red))
+
         }
     }
 

@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
     </style>
+    <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/secondaryColor</item>
+    </style>
 
     <style name="Theme.CitiesApp" parent="Base.Theme.CitiesApp" />
 </resources>

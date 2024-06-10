@@ -9,7 +9,4 @@ import java.util.Date
      @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var quadroLocal: String,
     var dataEntrega: Date
-) {
-//    constructor(): this(0, "", Date())
-//    constructor(quadroLocal: String): this(0,quadroLocal, Date())
-}
+) {}

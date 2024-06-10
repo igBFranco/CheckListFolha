@@ -136,7 +136,7 @@ class CheckList : Fragment() {
                 setText(todoItem?.itemName)
             }
 
-            AlertDialog.Builder(requireContext()).run {
+            val alertDialog = AlertDialog.Builder(requireContext()).run {
                 setView(dialogView)
                 setTitle("Editar Item")
                 setPositiveButton("Salvar") { _, _ ->
@@ -155,6 +155,8 @@ class CheckList : Fragment() {
                 }
                 setNegativeButton("Cancelar", null)
             }.show()
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(resources.getColor(R.color.red))
+
         }
     }
 
