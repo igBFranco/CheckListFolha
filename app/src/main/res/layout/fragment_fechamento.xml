@@ -18,41 +18,64 @@
         android:textColor="@color/primaryColor"
         android:layout_margin="5dp"/>
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:gravity="center">
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="match_parent"
-           android:text="Itens OK:"
-           android:textSize="16dp"
-           android:paddingRight="1dp"/>
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="0/0"
-           android:textSize="16dp"
-           android:id="@+id/itensOk"/>
-   </LinearLayout>
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
-        <TextView
+        android:layout_gravity="center_horizontal">
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Quadros Entregues:"
-            android:textSize="16dp"
-            android:paddingRight="1dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="0/0"
-            android:textSize="16dp"
-            android:id="@+id/quadrosOk"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_margin="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Itens OK:"
+                    android:textSize="16dp"
+                    android:paddingRight="1dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/0"
+                    android:textSize="16dp"
+                    android:id="@+id/itensOk"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Quadros Entregues:"
+                    android:textSize="16dp"
+                    android:paddingRight="1dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="0/0"
+                    android:textSize="16dp"
+                    android:id="@+id/quadrosOk"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/buttonSelectCompetencia"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Selecionar Competência"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textSize="13dp"/>
     </LinearLayout>
 
     <Button

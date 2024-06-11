@@ -1,5 +1,6 @@
 package br.pucpr.appdev20241.checklistfolha.view
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +23,8 @@ class Fechamento : Fragment() {
     private var _binding: FragmentFechamentoBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: FechamentoAdapter
+    private var selectedCompetencia: String? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,17 +38,24 @@ class Fechamento : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         updateCounts()
 
+        binding.buttonSelectCompetencia.setOnClickListener {
+            showDatePickerDialog()
+        }
+
         binding.buttonSave.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 val areAllCompleted = DataStore.areAllItemsCompleted()
                 if (areAllCompleted) {
+                    if (selectedCompetencia == null) {
+                        Toast.makeText(requireContext(), "Por favor, selecione uma competência.", Toast.LENGTH_LONG).show()
+                        return@launch
+                    }
                     val todos = DataStore.getAllToDos()
                     val quadros = DataStore.getAllQuadros()
                     val allItems = todos + quadros
                     displayItems(allItems)
 
-                    val competencia = getCurrentCompetencia()
-                    DataStore.saveFechamento(competencia)
+                    DataStore.saveFechamento(selectedCompetencia!!)
 
                     DataStore.clearData()
                     Toast.makeText(requireContext(), "Dados salvos com sucesso.", Toast.LENGTH_LONG).show()
@@ -78,11 +88,23 @@ class Fechamento : Fragment() {
         }
     }
 
-    private fun getCurrentCompetencia(): String {
+    private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
-        val month = calendar.get(Calendar.MONTH) + 1 // January is 0
         val year = calendar.get(Calendar.YEAR)
-        return String.format("%02d/%d", month, year)
+        val month = calendar.get(Calendar.MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, _ ->
+                selectedCompetencia = String.format("%02d/%d", selectedMonth + 1, selectedYear)
+                Toast.makeText(requireContext(), "Competência selecionada: $selectedCompetencia", Toast.LENGTH_SHORT).show()
+            },
+            year,
+            month,
+            1
+        )
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis() // Limitar seleção de datas futuras
+        datePickerDialog.show()
     }
 
     override fun onDestroyView() {
