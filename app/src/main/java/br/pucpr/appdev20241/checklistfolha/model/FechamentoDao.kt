@@ -16,4 +16,7 @@ interface FechamentoDao {
 
     @Query("DELETE FROM Fechamento WHERE id = :id")
     suspend fun deleteById(id: Int)
+
+    @Query("DELETE FROM Fechamento")
+    suspend fun deleteAll(): Int
 }

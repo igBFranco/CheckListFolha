@@ -8,7 +8,7 @@ import br.pucpr.appdev20241.checklistfolha.R
 
 class SplashActivity : AppCompatActivity() {
 
-    private val SPLASH_DISPLAY_LENGTH = 2000
+    private val SPLASH_DISPLAY_LENGTH = 1000
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)

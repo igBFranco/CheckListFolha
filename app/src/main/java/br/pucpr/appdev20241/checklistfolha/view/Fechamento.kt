@@ -1,5 +1,6 @@
 package br.pucpr.appdev20241.checklistfolha.view
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -50,21 +51,28 @@ class Fechamento : Fragment() {
                         Toast.makeText(requireContext(), "Por favor, selecione uma competência.", Toast.LENGTH_LONG).show()
                         return@launch
                     }
-                    val todos = DataStore.getAllToDos()
-                    val quadros = DataStore.getAllQuadros()
-                    val allItems = todos + quadros
-                    displayItems(allItems)
-
-                    DataStore.saveFechamento(selectedCompetencia!!)
-
-                    DataStore.clearData()
-                    Toast.makeText(requireContext(), "Dados salvos com sucesso.", Toast.LENGTH_LONG).show()
+                    showConfirmationDialog()
                 } else {
                     Toast.makeText(requireContext(), "Todos os itens devem estar concluídos para salvar.", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
+
+    private fun archiveData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val todos = DataStore.getAllToDos()
+            val quadros = DataStore.getAllQuadros()
+            val allItems = todos + quadros
+            displayItems(allItems)
+
+            DataStore.saveFechamento(selectedCompetencia!!)
+
+            DataStore.clearData()
+            Toast.makeText(requireContext(), "Dados salvos com sucesso.", Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     private fun displayItems(items: List<Any>) {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
@@ -97,14 +105,25 @@ class Fechamento : Fragment() {
             requireContext(),
             { _, selectedYear, selectedMonth, _ ->
                 selectedCompetencia = String.format("%02d/%d", selectedMonth + 1, selectedYear)
-                Toast.makeText(requireContext(), "Competência selecionada: $selectedCompetencia", Toast.LENGTH_SHORT).show()
+                binding.textViewSelectedCompetencia.text = "$selectedCompetencia"
+
             },
             year,
             month,
             1
         )
-        datePickerDialog.datePicker.maxDate = System.currentTimeMillis() // Limitar seleção de datas futuras
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
         datePickerDialog.show()
+    }
+    private fun showConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmação")
+            .setMessage("Deseja realmente arquivar os dados para a competência $selectedCompetencia?")
+            .setPositiveButton("Sim") { _, _ ->
+                archiveData()
+            }
+            .setNegativeButton("Não", null)
+            .show()
     }
 
     override fun onDestroyView() {

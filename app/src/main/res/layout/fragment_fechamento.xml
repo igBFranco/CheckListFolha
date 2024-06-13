@@ -52,7 +52,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_margin="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -68,16 +69,33 @@
             </LinearLayout>
 
         </LinearLayout>
-        <Button
-            android:id="@+id/buttonSelectCompetencia"
-            android:layout_width="150dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selecionar Competência"
+            android:orientation="vertical"
             android:layout_margin="10dp"
-            android:backgroundTint="@color/primaryColor"
-            android:textSize="13dp"/>
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Competência:"
+                android:textSize="16dp"/>
+            <TextView
+                android:id="@+id/textViewSelectedCompetencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nenhuma"
+                android:textSize="16dp"/>
+        </LinearLayout>
     </LinearLayout>
-
+    <Button
+        android:id="@+id/buttonSelectCompetencia"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Selecionar Competência"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/primaryColor"
+        android:textSize="13dp"/>
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
