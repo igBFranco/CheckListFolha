@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "102589524225",
+    "project_id": "checklistfolha",
+    "storage_bucket": "checklistfolha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102589524225:android:9d70cb612f47d5e36c9300",
+        "android_client_info": {
+          "package_name": "br.pucpr.appdev20241.checklistfolha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8voxAjoKhLWWT4ry16_u6GCk38c22ncc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
