@@ -4,43 +4,57 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:gravity="center"
+    android:background="@color/primaryColor"
     tools:context=".controller.LoginActivity">
 
     <ImageView
         android:id="@+id/loginIcon"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:src="@drawable/icon" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:layout_marginBottom="15dp"
         android:hint="Email" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="10dp"
         android:hint="Senha"
+        android:layout_marginBottom="15dp"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/secondaryColor"
         android:text="Login" />
 
     <Button
         android:id="@+id/resetPasswordButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Esqueci a Senha" />
 
     <Button
         android:id="@+id/createAccountButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Criar uma Conta" />
 </LinearLayout>

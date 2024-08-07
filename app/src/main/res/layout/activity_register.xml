@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:gravity="center"
+    android:background="@color/primaryColor"
     tools:context=".controller.RegisterActivity">
 
     <ImageView
@@ -11,30 +13,40 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
         android:src="@drawable/icon" />
 
     <EditText
         android:id="@+id/emailEditTextRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:background="@color/white"
+        android:padding="10dp"
         android:hint="Email" />
 
     <EditText
         android:id="@+id/passwordEditTextRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:background="@color/white"
+        android:padding="10dp"
         android:hint="Senha"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/createButton"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/secondaryColor"
+        android:layout_marginBottom="10dp"
         android:text="Criar Conta" />
 
     <Button
         android:id="@+id/loginActivityButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Já Possuo Conta" />
 </LinearLayout>
