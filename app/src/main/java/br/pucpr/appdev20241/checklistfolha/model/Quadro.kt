@@ -1,12 +1,12 @@
 package br.pucpr.appdev20241.checklistfolha.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
-@Entity(tableName = "Quadro")
  data class Quadro (
-     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    var quadroLocal: String,
-    var dataEntrega: Date
-) {}
+    @DocumentId val id: String = "",
+    var quadroLocal: String = "",
+    var dataEntrega: Date = Date()
+) {
+     constructor() : this("", "", Date())
+ }

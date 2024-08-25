@@ -2,6 +2,7 @@ package br.pucpr.appdev20241.checklistfolha.controller
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
@@ -31,6 +32,9 @@ class LoginActivity: AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
+                            val user = auth.currentUser
+                            val uid = user?.uid
+                            Log.d("Auth", "user ID: $uid")
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             finish()

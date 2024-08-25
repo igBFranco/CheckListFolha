@@ -1,11 +1,13 @@
 package br.pucpr.appdev20241.checklistfolha.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-@Entity
+import com.google.firebase.firestore.DocumentId
+
+
 data class Fechamento(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val competencia: String,
-    val todos: List<ToDo>,
-    val quadros: List<Quadro>
-)
+    @DocumentId val id: String = "",
+    val competencia: String = "",
+    val todos: List<ToDo> = emptyList(),
+    val quadros: List<Quadro> = emptyList()
+){
+    constructor() : this("", "", emptyList(), emptyList())
+}

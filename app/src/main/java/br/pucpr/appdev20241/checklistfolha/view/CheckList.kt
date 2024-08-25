@@ -144,7 +144,7 @@ class CheckList : Fragment() {
                     todoItem?.itemName = updatedText
                     if (todoItem != null) {
                         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                            DataStore.editToDoItem(position, todoItem)
+                            DataStore.editToDoItem(todoItem)
                             val updatedList = DataStore.getAllToDos().toMutableList()
                             withContext(Dispatchers.Main) {
                                 adapter.updateData(updatedList)

@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-        DataStore.init(this)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {

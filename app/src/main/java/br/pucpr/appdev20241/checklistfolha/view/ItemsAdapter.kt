@@ -37,7 +37,7 @@ class ItemsAdapter (var todoItems: MutableList<ToDo>): RecyclerView.Adapter<Item
     }
 
     private suspend fun saveUpdatedToDoItem(position: Int, updatedToDo: ToDo) {
-        DataStore.editToDoItem(position, updatedToDo)
+        DataStore.editToDoItem(updatedToDo)
     }
 
     override fun getItemCount(): Int = todoItems.size

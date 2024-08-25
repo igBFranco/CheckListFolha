@@ -160,7 +160,7 @@ class ControleQuadros : Fragment() {
                     quadroItem?.dataEntrega = calendar.time
                     if (quadroItem != null) {
                         viewLifecycleOwner.lifecycleScope.launch {
-                            DataStore.editQuadroItem(position, quadroItem)
+                            DataStore.editQuadroItem(quadroItem)
                             val updatedList = DataStore.getAllQuadros().toMutableList()
                             adapter.updateData(updatedList)
                             Toast.makeText(requireContext(), "Quadro editado com sucesso!", Toast.LENGTH_LONG).show()
