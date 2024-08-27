@@ -6,7 +6,8 @@ import java.util.Date
  data class Quadro (
     @DocumentId val id: String = "",
     var quadroLocal: String = "",
-    var dataEntrega: Date = Date()
+    var dataEntrega: Date = Date(),
+    var imageUrl: String? = null
 ) {
      constructor() : this("", "", Date())
  }

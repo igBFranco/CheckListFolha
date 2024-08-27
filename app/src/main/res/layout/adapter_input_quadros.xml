@@ -18,6 +18,19 @@
         android:id="@+id/datePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/imageViewQuadro"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="Imagem"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery" />
+
+    <Button
+        android:id="@+id/buttonSelectImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selecionar Imagem" />
 
     <Button
         android:id="@+id/btnAddItem"
