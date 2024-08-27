@@ -125,7 +125,7 @@ class ControleQuadros : Fragment() {
     private suspend fun saveQuadroWithImage(local: String, dataEntrega: Date) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val storageReference = FirebaseStorage.getInstance().reference
-        val imageRef = storageReference.child("images/$uid/${System.currentTimeMillis()}.jpg")
+        val imageRef = storageReference.child("image/$uid/${System.currentTimeMillis()}.jpg")
 
         try {
             val uploadTask = imageRef.putFile(selectedImageUri!!).await()
@@ -264,7 +264,7 @@ class ControleQuadros : Fragment() {
 
     private suspend fun uploadImageToFirebaseStorage(imageUri: Uri): String {
         val storageReference = FirebaseStorage.getInstance().reference
-        val imageRef = storageReference.child("quadros/${UUID.randomUUID()}.jpg")
+        val imageRef = storageReference.child("image/${UUID.randomUUID()}.jpg")
         imageRef.putFile(imageUri).await()
         return imageRef.downloadUrl.await().toString()
     }
